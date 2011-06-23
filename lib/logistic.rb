@@ -32,8 +32,8 @@ class Logistic
         puts "Update is activities done: #{activities_done}"
         time = Time.now
         users[user_id][activity_id][:done] = activities_done
-        average = activities_done / (Time.now - user[user_id][activity_id][:start]) * 60
-        response = Server.put("http://#{host}/report_activity_users/#{user[user_id][activity_id][:id]}.xml",
+        average = activities_done.to_f / (Time.now - users[user_id][activity_id][:start]) * 60
+        response = Server.put("http://#{host}/report_activity_users/#{users[user_id][activity_id][:id]}.xml",
                               :body => {
                                 :real_time => average
                               })
