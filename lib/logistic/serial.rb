@@ -1,9 +1,5 @@
 require 'serialport'
-require 'httparty'
-
-class Server
-  include HTTParty
-end
+require 'server'
 
 host = ARGV.shift
 
