@@ -32,16 +32,14 @@ class Logistic
         puts "Activity update (user_id: #{user_id}, activity_id: #{activity_id})"
         activities_done = @reader.read.to_i
         puts "Activities done: #{activities_done}"
-        time_spent = Time.now - users[user_id][activity_id][:start]
-        users[user_id][activity_id][:done] = activities_done
-        average = time_spent / activities_done.to_f
-        puts "Time spent: #{time_spent}"
-        puts "Average: #{average}"
-        response = Server.put("http://#{host}/report_activity_users/#{users[user_id][activity_id][:id]}.xml",
+        time = Time.now
+        time_spent = time - users[user_id][activity_id][:start]
+        users[user_id][activity_id][:start] = time
+        users[user_id][activity_id][:done] = activities_done        
+        puts "Time spent: #{time_spent}"        
+        response = Server.put("http://#{host}/report_activity_users/#{users[user_id][activity_id][:id]}/update_time",
                               :body => {
-                                :report_activity_user => { 
-                                  :real_time => average
-                                }
+                                :time => time_spent
                               })
         puts response.parsed_response
       end
