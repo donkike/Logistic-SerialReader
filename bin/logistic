@@ -2,3 +2,21 @@
 $LOAD_PATH.push File.join(File.dirname(__FILE__), "/../lib")
 require 'logistic'
 
+def usage
+  <<-usage
+  Usage:
+    logistic <port> [host_server]
+  usage
+end
+
+port = ARGV.shift
+host = ARGV.shift
+
+if port.nil?
+  puts "No device port defined"
+  puts usage
+  exit
+end
+
+logistic = Logistic.new(port, host)
+#logistic.run
