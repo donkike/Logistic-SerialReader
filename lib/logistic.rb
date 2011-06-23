@@ -31,10 +31,12 @@ class Logistic
       else
         puts "Activity update (user_id: #{user_id}, activity_id: #{activity_id})"
         activities_done = @reader.read.to_i
-        puts "Update is activities done: #{activities_done}"
-        time = Time.now
+        puts "Activities done: #{activities_done}"
+        time_spent = Time.now - users[user_id][activity_id][:start]
         users[user_id][activity_id][:done] = activities_done
-        average = activities_done.to_f / (time - users[user_id][activity_id][:start]) * 60
+        average = time_spent / activities_done.to_f
+        puts "Time spent: #{time_spent}"
+        puts "Average: #{average}"
         response = Server.put("http://#{host}/report_activity_users/#{users[user_id][activity_id][:id]}.xml",
                               :body => {
                                 :report_activity_user => { 
