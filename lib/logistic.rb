@@ -13,6 +13,7 @@ class Logistic
   
   def run  
     loop do
+      puts "\nReceiving..."
       user_id = @reader.read.to_i
       activity_id = @reader.read.to_i
       users[user_id] ||= {}
@@ -25,18 +26,22 @@ class Logistic
                                     :user_id => user_id, :activity_id => activity_id
                                   }
                                 })
-        users[user_id][activity_id][:id] = reponse.parsed_response['report_activity_user']['id']
+        puts response.parsed_response
+        users[user_id][activity_id][:id] = response.parsed_response['report_activity_user']['id']
       else
-        puts "Activity update: (user_id: #{user_id}, activity_id: #{activity_id})"
+        puts "Activity update (user_id: #{user_id}, activity_id: #{activity_id})"
         activities_done = @reader.read.to_i
         puts "Update is activities done: #{activities_done}"
         time = Time.now
         users[user_id][activity_id][:done] = activities_done
-        average = activities_done.to_f / (Time.now - users[user_id][activity_id][:start]) * 60
+        average = activities_done.to_f / (time - users[user_id][activity_id][:start]) * 60
         response = Server.put("http://#{host}/report_activity_users/#{users[user_id][activity_id][:id]}.xml",
                               :body => {
-                                :real_time => average
+                                :report_activity_user => { 
+                                  :real_time => average
+                                }
                               })
+        puts response.parsed_response
       end
     end
     @reader.close    
